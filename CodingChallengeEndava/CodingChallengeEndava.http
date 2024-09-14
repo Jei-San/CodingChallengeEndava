@@ -1,0 +1,6 @@
+@CodingChallengeEndava_HostAddress = http://localhost:5119
+
+GET {{CodingChallengeEndava_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
