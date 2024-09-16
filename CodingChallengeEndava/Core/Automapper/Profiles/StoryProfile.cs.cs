@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using CodingChallengeEndava.Core.Models;
+using CodingChallengeEndava.Core.Data.Models;
 using CodingChallengeEndava.Shared.Dtos;
 
 namespace CodingChallengeEndava.Core.Automapper.Profiles
@@ -9,6 +9,7 @@ namespace CodingChallengeEndava.Core.Automapper.Profiles
         public StoryProfile()
         {
             CreateMap<Story, StoryDto>()
+                .BeforeMap((src, dest) => src.Id = src.ExternalId)
                 .ReverseMap()
                 .ForMember(x => x.Time, opt => opt.Ignore())
                 .ForMember(x => x.Descendants, opt => opt.Ignore())

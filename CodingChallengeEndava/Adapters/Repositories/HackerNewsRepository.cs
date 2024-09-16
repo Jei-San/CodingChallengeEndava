@@ -1,66 +1,39 @@
-﻿using CodingChallengeEndava.Core.IRepositories;
-using CodingChallengeEndava.Core.Models;
-using CodingChallengeEndava.Core.Models.QueryParams;
+﻿using CodingChallengeEndava.Core.Data.Models;
+using CodingChallengeEndava.Core.IRepositories;
 using CodingChallengeEndava.Shared.Extensions;
 using CodingChallengeEndava.Shared.SharedResources;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace CodingChallengeEndava.Adapters.Repositories
 {
     public class HackerNewsRepository : IHackerNewsRepository
     {
         private readonly HttpClient httpClient;
-        private readonly IMemoryCache memoryCache;
-        
-        public HackerNewsRepository(HttpClient httpClient, IMemoryCache memoryCache)
+
+        public HackerNewsRepository(HttpClient httpClient)
         {
             this.httpClient = httpClient;
-            this.memoryCache = memoryCache;
         }
 
-        public async Task<PaginatedList<Story>> GetPaginatedStoriesAsync(PaginatedQuery paginatedQuery)
+        public async Task<List<int>> GetStoryIdsAsync()
         {
-            if (!memoryCache.TryGetValue(SharedResources.CacheKey, out List<int>? storyIds))
-            {
-                string url = $"{httpClient.BaseAddress}{SharedResources.NewStoriesUrl}";
-                storyIds = await httpClient.GetAndDeserialize<List<int>>(url);
-
-                var cacheEntryPoints = new MemoryCacheEntryOptions()
-                    .SetSlidingExpiration(TimeSpan.FromSeconds(60))
-                    .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
-                    .SetPriority(CacheItemPriority.Normal);
-
-                memoryCache.Set(SharedResources.CacheKey, storyIds, cacheEntryPoints);
-            }
+            string url = $"{httpClient.BaseAddress}{SharedResources.NewStoriesUrl}";
+            List<int>? storyIds = await httpClient.GetAndDeserialize<List<int>>(url);
 
             if (storyIds == null)
                 throw new Exception(SharedResources.FailedToRetrieveStoriesErrorMessage);
 
-            PaginatedList<int> paginatedList = storyIds.ToPaginatedList(paginatedQuery);
-
-            if (paginatedList.Items == null)
-                throw new Exception(SharedResources.FailedToRetrieveStoriesErrorMessage);
-
-            var stories = new List<Story>();
-
-            foreach (int storyId in paginatedList.Items)
-            {
-                Story story = await GetStoryAsync(storyId);
-                stories.Add(story);
-            }
-
-            return new PaginatedList<Story>()
-            {
-                TotalItems = paginatedList.TotalItems,
-                PageIndex = paginatedList.PageIndex,
-                Items = stories
-            };
+            return storyIds;
         }
 
         public async Task<Story> GetStoryAsync(int id)
         {
             string url = $"{httpClient.BaseAddress}{string.Format(SharedResources.StoryUrl, id)}";
-            return await httpClient.GetAndDeserialize<Story>(url) ?? new Story();
+            Story story = await httpClient.GetAndDeserialize<Story>(url) ?? new Story();
+
+            if (story == null)
+                throw new Exception(SharedResources.FailedToRetrieveStoriesErrorMessage);
+
+            return story;
         }
     }
 }

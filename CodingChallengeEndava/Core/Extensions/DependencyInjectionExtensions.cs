@@ -16,6 +16,7 @@ namespace CodingChallengeEndava.Core.Extensions
         public static void ConfigureRepositories(this IServiceCollection services)
         {
             services.AddTransient<IHackerNewsRepository, HackerNewsRepository>();
+            services.AddTransient<IStoryRepository, StoryRepository>();
         }
 
         public static void ConfigureCaching(this IServiceCollection services)

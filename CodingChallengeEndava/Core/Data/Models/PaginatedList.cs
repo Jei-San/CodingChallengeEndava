@@ -1,4 +1,4 @@
-﻿namespace CodingChallengeEndava.Core.Models
+﻿namespace CodingChallengeEndava.Core.Data.Models
 {
     public class PaginatedList<T>
     {

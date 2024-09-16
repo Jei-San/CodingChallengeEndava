@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using CodingChallengeEndava.Core.Models.QueryParams;
+using CodingChallengeEndava.Core.Data.Models.QueryParams;
 using CodingChallengeEndava.Shared.Dtos.QueryParams;
 
 namespace CodingChallengeEndava.Core.Automapper.Profiles

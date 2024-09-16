@@ -6,5 +6,6 @@ namespace CodingChallengeEndava.Core.IServices
     public interface IStoryService
     {
         Task<PaginatedListDto<StoryDto>> GetPaginatedStoriesAsync(PaginatedQueryDto paginatedQueryDto);
+        Task SyncStoriesAsync();
     }
 }

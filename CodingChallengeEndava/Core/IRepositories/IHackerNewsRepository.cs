@@ -1,11 +1,10 @@
-﻿using CodingChallengeEndava.Core.Models;
-using CodingChallengeEndava.Core.Models.QueryParams;
+﻿using CodingChallengeEndava.Core.Data.Models;
 
 namespace CodingChallengeEndava.Core.IRepositories
 {
     public interface IHackerNewsRepository
     {
-        Task<PaginatedList<Story>> GetPaginatedStoriesAsync(PaginatedQuery paginatedQuery);
+        Task<List<int>> GetStoryIdsAsync();
         Task<Story> GetStoryAsync(int id);
     }
 }
